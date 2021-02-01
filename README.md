@@ -1,62 +1,140 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Laravel with Cypress tests
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Laravel application with an authentication starter kit laravel breeze, cypress tests and homestead development environment.
 
-## About Laravel
+## Getting Started
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+These instructions will get you a copy of the project up and running on your virtual box for development and testing purposes.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Prerequisites
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- [Vagrant](https://www.vagrantup.com/) (2.2.1+)
+- [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 
-## Learning Laravel
+### Installing
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. Make sure that `IP Address and URL` are added at the bottom of the hosts file. The directory of the host file is `C:/Windows/System32/drivers/etc/hosts`. It is very important that these match with the site name in the `Homestead.yaml` file.
+```
+192.168.10.10 homestead.test 
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+2. Clone the repository and change the `map:` path to your project `directory` in `Homestead.yaml` file.
+```
+folders:
+    -
+        map: 'C:\laravel-apps\sphera-assessment'
+        to: /home/vagrant/code
+```
 
-## Laravel Sponsors
+3. Run `vagrant up` in the project directory.
+4. After provisioning you can access the application:
+- through the URL - [http://homestead.test/](http://homestead.test/)
+5. To get access to the box and the features provided by Homestead, SSH into it, then change to the `code` directory:
+```
+vagrant ssh
+cd code
+```
+From here, you can run NPM, composer, git and more. You can also run Laravel commands with:
+```
+php artisan
+```
+Run this command in the project directory to generate database migrations
+```
+php artisan migrate
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## Connecting to Database
 
-### Premium Partners
+**Homestead** by default creates a database with name `homestead` and credentials `homestead / secret`. This application uses the default `homestead` database.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/)**
-- **[OP.GG](https://op.gg)**
+To connect to the mysql database from ssh run this from the `code` directory:
+```
+mysql -u homestead -p
+password: secret
+```
+To view database:
+```
+SHOW DATABASES;
+```
 
-## Contributing
+## Running the Cypress tests
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+To run `Cypress` tests
 
-## Code of Conduct
+1. Run `npm install` from `code` directory to install the node modules. This installs all node modules from package.json.
+Includes `cypress@6.3.0 `.
+```
+npm install
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+2. Make sure the application is up and running. To serve application run this command from `code` directory:
+```
+php artisan serve
+```
 
-## Security Vulnerabilities
+3. Once the application is up. Run Cypress tests from `code` directory:
+```
+npx cypress run
+```
+This automatically runs `Authentication.spec.js` file with Electron browser in the command line. 
+Please wait until all tests finish executing. Once it is completed the result can be seen in the command line.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Solution for common errors while running Cypress tests in Linux Command line 
+1. Xvfb dependency error
+```
+Your system is missing the dependency: Xvfb
 
-## License
+Install Xvfb and run Cypress again.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Read our documentation on dependencies for more information:
+
+https://on.cypress.io/required-dependencies
+
+If you are using Docker, we provide containers with all required dependencies installed.
+
+----------
+
+Error: spawn Xvfb ENOENT
+
+----------
+
+Platform: linux (Ubuntu - 20.04)
+Cypress Version: 6.3.0
+```
+
+This issue can be solved by installing Xvbf in linux from `code` directory:
+```
+sudo apt-get install xvfb
+```
+2. Cypress verification time out error
+```
+Cypress verification timed out.
+
+This command failed with the following output:
+
+/home/vagrant/.cache/Cypress/6.3.0/Cypress/Cypress --no-sandbox --smoke-test --ping=827
+
+----------
+
+Command timed out after 30000 milliseconds: /home/vagrant/.cache/Cypress/6.3.0/Cypress/Cypress --no-sandbox --smoke-test --ping=827
+Timed out
+
+----------
+
+Platform: linux (Ubuntu - 20.04)
+Cypress Version: 6.3.0
+```
+
+This issue can be solved by executing the below command from `code` directory:
+```
+npx cypress verify
+```
+
+## Built With
+
+- [Laravel](https://laravel.com/) - The web framework used
+- [Cypress](https://www.cypress.io/) - Cypress test runner
+- [Node.js](https://nodejs.org/en/) - Javascript runtime environment
+
+## Documentation
+Full official documentation of original Homestead project [is located here](http://laravel.com/docs/homestead).
